@@ -1,3 +1,7 @@
+from os import getenv
+
+shared = getenv("SHARED_FOLDER", 'shared/')
+
 """
 TELEGRAM
 """
@@ -12,7 +16,7 @@ link_template = "https://t.me/c/{{chat_id}}/{{message_id}}"
 ignore_chats = []
 
 joiner = ", "
-keywords_file = 'keywords.txt'
+keywords_file = shared + 'keywords.txt'
 
 """
 WEB
