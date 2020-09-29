@@ -8,9 +8,9 @@ TELEGRAM
 
 api_id = 1000000
 api_hash = '...'
-api_sess_name = 'anon'
+api_sess_name = 'anon' # anon.session
 
-target_chat_id = -100000000
+target_chat_id = -100000000 # found messages will be possed here
 link_template = "https://t.me/c/{{chat_id}}/{{message_id}}"
 
 ignore_chats = []
