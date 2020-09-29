@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+
+  parser:
+    build: .
+    network_mode: host
+    container_name: parser
+    volumes:
+      - ./shared:/app/shared
+    environment:
+      - SHARED_FOLDER=../shared/
+    expose:
+      - 8001 # may be need to change (also in config.py)
