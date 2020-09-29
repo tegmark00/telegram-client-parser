@@ -9,6 +9,6 @@ services:
     volumes:
       - ./shared:/app/shared
     environment:
-      - SHARED_FOLDER=../shared/
+      - SHARED_FOLDER=shared/
     expose:
       - 8001 # may be need to change (also in config.py)
