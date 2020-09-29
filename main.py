@@ -1,7 +1,6 @@
 from telethon import TelegramClient, events
 from aiohttp import web
 import asyncio
-import threading
 
 import config
 
@@ -12,7 +11,7 @@ def load_keywords():
   return data.lower().strip().split(', ')
 
 
-def save_keywords(keywords):
+async def save_keywords(keywords):
   with open(config.keywords_file, 'w') as file:
     file.write(config.joiner.join(keywords).lower().strip())
   return
@@ -54,6 +53,7 @@ async def my_event_handler(event):
       if message_link:
         await res.reply(message_link)
 
+
 '''
 WEB
 '''
@@ -82,17 +82,10 @@ async def save(request):
   new_keywords = form.get('keywords', "")
   new_keywords = new_keywords.split(config.joiner)
 
-  save_keywords(new_keywords)
-  keywords = new_keywords
-  
+  await save_keywords(new_keywords) # save changes to file
+  keywords = new_keywords # update current var with keywords
+
   raise web.HTTPFound('/')
-
-
-app = web.Application()
-app.add_routes(routes)
-runner = web.AppRunner(app)
-
-loop = asyncio.get_event_loop()
 
 
 async def start() -> None:
@@ -107,11 +100,18 @@ async def stop() -> None:
     await client.disconnect()
 
 
+app = web.Application()
+app.add_routes(routes)
+runner = web.AppRunner(app)
+
+loop = asyncio.get_event_loop()
+
+
 loop.run_until_complete(start())
-print("========== Initialization complete ==========")
 print("========== Initialization complete ==========")
 print(f"Listening at http://{config.host}:{config.port}")
 print(f"Public URL prefix is {config.public_url}")
+print(f"Current keywords: {keywords}")
 print("(Press CTRL+C to quit)")
 
 try:
