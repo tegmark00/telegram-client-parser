@@ -4,6 +4,7 @@ asyncio==3.4.3
 attrs==20.2.0
 chardet==3.0.4
 idna==2.10
+logger==1.4
 multidict==4.7.6
 pyaes==1.6.1
 pyasn1==0.4.8

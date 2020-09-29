@@ -1,8 +1,12 @@
 from telethon import TelegramClient, events
 from aiohttp import web
 import asyncio
+import logging
 
 import config
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 def load_keywords():
@@ -38,6 +42,8 @@ async def my_event_handler(event):
   if chat_id not in config.ignore_chats: # check if we searching keywords in this chat
     if text and any(word in text for word in keywords): # check if message text matches search keywords
 
+      logging.info(f'[PARSER]: match new message chat_id: {chat_id}, sender_id: {sender_id}, text: {text}')
+
       target_chat = await client.get_entity(config.target_chat_id) # Group to send messages matched
       res = await client.forward_messages(target_chat, event.message) # forward message to target group
 
@@ -63,6 +69,8 @@ routes = web.RouteTableDef()
 @routes.get('/')
 async def index(request):
 
+  logging.info('[WEB]: access /')
+
   global keywords
 
   with open('index.html', 'r') as file:
@@ -84,6 +92,9 @@ async def save(request):
 
   await save_keywords(new_keywords) # save changes to file
   keywords = new_keywords # update current var with keywords
+
+  logging.info('[WEB]: access /save')
+  logging.info(f'[WEB]: Keywords updated: {keywords}')
 
   raise web.HTTPFound('/')
 
@@ -107,17 +118,17 @@ runner = web.AppRunner(app)
 loop = asyncio.get_event_loop()
 
 loop.run_until_complete(start())
-print("========== Initialization complete ==========")
-print(f"Listening at http://{config.host}:{config.port}")
-print(f"Public URL prefix is {config.public_url}")
-print(f"Current keywords: {keywords}")
-print("(Press CTRL+C to quit)")
+logging.info("========== Initialization complete ==========")
+logging.info(f"Listening at http://{config.host}:{config.port}")
+logging.info(f"Public URL prefix is {config.public_url}")
+logging.info(f"Current keywords: {keywords}")
+logging.info("(Press CTRL+C to quit)")
 
 try:
     loop.run_forever()
 except KeyboardInterrupt:
     loop.run_until_complete(stop())
 except Exception as e:
-    print("Fatal error in event loop")
-    print(str(e))
+    logging.critical("Fatal error in event loop")
+    logging.critical(str(e))
     raise
