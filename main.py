@@ -106,7 +106,6 @@ runner = web.AppRunner(app)
 
 loop = asyncio.get_event_loop()
 
-
 loop.run_until_complete(start())
 print("========== Initialization complete ==========")
 print(f"Listening at http://{config.host}:{config.port}")
