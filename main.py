@@ -1,7 +1,10 @@
 from telethon import TelegramClient, events
 from aiohttp import web
+import asyncio
+import threading
 
 import config
+
 
 client = TelegramClient(config.api_sess_name,
                         config.api_id,
@@ -37,5 +40,45 @@ async def my_event_handler(event):
       if message_link:
         await res.reply(message_link)
 
-client.start()
-client.run_until_disconnected()
+'''
+WEB
+'''
+
+routes = web.RouteTableDef()
+
+@routes.get('/')
+async def hello(request):
+    return web.Response(text="Hello, world")
+
+
+app = web.Application()
+app.add_routes(routes)
+runner = web.AppRunner(app)
+
+loop = asyncio.get_event_loop()
+
+
+async def start() -> None:
+    await client.start()
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 5000)
+    await site.start()
+
+
+async def stop() -> None:
+    await runner.cleanup()
+    await client.disconnect()
+
+
+loop.run_until_complete(start())
+print("========== Initialization complete ==========")
+print(f"Listening at http://")
+print(f"Public URL prefix is")
+print("(Press CTRL+C to quit)")
+try:
+    loop.run_forever()
+except KeyboardInterrupt:
+    loop.run_until_complete(stop())
+except Exception:
+    print("Fatal error in event loop")
+    raise
