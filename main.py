@@ -28,7 +28,7 @@ client = TelegramClient(config.api_sess_name,
                         config.api_hash)
 
 
-@client.on(events.NewMessage)
+@client.on(events.NewMessage(func=lambda event: not event.is_private)) # do not search in private messages
 async def my_event_handler(event):
 
   global keywords
