@@ -39,7 +39,7 @@ async def my_event_handler(event):
   message_id = event.message.id
 
   text = event.message.message # get message text
-  word_list = re.sub("[^a-zA-Zа-яА-ЯЁёЇїІіЄєҐґ0-9_-]", " ",  text.lower()).split() # string to list of words
+  word_list = re.sub("[^a-zа-яёїієґ0-9_-]", " ",  text.lower()).split() # string to list of words
 
   if chat_id not in config.ignore_chats: # check if we searching keywords in this chat
     if any(word in word_list for word in keywords): # check if message text matches search keywords
