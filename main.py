@@ -59,7 +59,7 @@ async def my_event_handler(event):
                                             replace("{{chat_id}}", message_link).\
                                             replace('{{message_id}}', str(message_id))
 
-      if message_link:
+      if res and message_link:
         await res.reply(message_link)
 
 
